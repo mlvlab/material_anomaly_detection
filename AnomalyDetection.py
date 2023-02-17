@@ -26,27 +26,33 @@ def roc_auc(labels, scores, defect_name = None, save_path = None):
   plt.show()
   return roc_auc
 
+# Data load
+# matlab 형식으로 preprocess
+# scipy library 활용하여 data load
 mat = scipy.io.loadmat('$path_for_data$.mat') 
 mat = {k:v for k, v in mat.items() if k[0] != '_'}
 
 print(mat.keys())
 print("All dataset: {}".format(len(mat['y'])))
 
+
 # Dictionary에서 normal, outlier에 해당하는 index를 찾아서 따로 저장
 normal_data_index = [i for i in range(len(mat['y'])) if mat['y'][i] == 0]
 outlier_data_index = [i for i in range(len(mat['y'])) if mat['y'][i] == 1]
 
-
 print("normal data: {}".format(len(normal_data_index)))
 print("outlier data: {}".format(len(outlier_data_index)))
+
 
 # normal index, outlier index 출력
 print(normal_data_index[:20])
 print(outlier_data_index[:20])
 
+
 # X (data), y (label)을 먼저 DataFrame으로 저장
 dataframe_X = pd.DataFrame(mat['X'])
 dataframe_y = pd.DataFrame(mat['y'])
+
 
 # DataFrame에서 normal, outlier index의 행을 추출해서 분리
 normal_data_X = dataframe_X.iloc[normal_data_index]
@@ -63,6 +69,7 @@ print("Length of normal_data_y: {}".format(len(normal_data_y)))
 
 print("Length of abnormal_data_X: {}".format(len(fraud_data_X)))
 print("Length of abnormal_data_X: {}".format(len(fraud_data_y)))
+
 
 # Split train and test
 X_train, X_test, y_train, y_test = train_test_split(normal_data_X,normal_data_y,test_size=0.1,random_state=34)
